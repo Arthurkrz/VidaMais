@@ -1,9 +1,18 @@
-from itertools import tee
 import os
+
+class Paciente:
+    def __init__(self, nome, idade, telefone, cpf, rg):
+        self.nome = nome
+        self.idade = int(idade)
+        self.telefone = telefone
+        self.cpf = cpf
+        self.rg = rg
 
 class Menu:
     def __init__(self):
         self.controle = True
+
+        self.pacientes = []
 
         self.opcoes = {
             "1": self.cadastrar,
@@ -67,24 +76,78 @@ class Menu:
 
         self.limpar()
         print("Paciente cadastrado com sucesso!")
+
+        paciente = Paciente(nome, idade, telefone, cpf, rg)
+        self.pacientes.append(paciente)
+
         self.read_key()
         self.limpar()
 
     def estatisticas(self):
         self.limpar()
-        print("estatistica")
+
+        if not self.pacientes:
+            print("Nenhum paciente cadastrado!")
+            self.read_key()
+            self.limpar()
+            return
+        else:
+            print("Estatisticas dos pacientes cadastrados:\n")
+
+            total_pacientes = len(self.pacientes)
+            idades = [int(p.idade) for p in self.pacientes]
+            idade_media = sum(idades) / total_pacientes
+            paciente_mais_novo = min(self.pacientes, key=lambda p: p.idade)
+            paciente_mais_velho = max(self.pacientes, key=lambda p: p.idade)
+
+            print(f"Total de pacientes cadastrados: {total_pacientes}")
+            print(f"Idade media dos pacientes: {idade_media:.2f} anos")
+            print(f"Paciente mais novo: {paciente_mais_novo.nome} ({paciente_mais_novo.idade} anos)")
+            print(f"Paciente mais velho: {paciente_mais_velho.nome} ({paciente_mais_velho.idade} anos)")
+
         self.read_key()
         self.limpar()
 
     def buscar(self):
         self.limpar()
-        print("busca")
+
+        if not self.pacientes:
+            print("Nenhum paciente cadastrado!")
+            self.read_key()
+            self.limpar()
+            return
+
+        nome = input("Digite o nome do paciente que deseja buscar: ").strip().lower()
+
+        encontrados = [p for p in self.pacientes if nome in p.nome.lower()]
+
+        self.limpar()
+
+        if encontrados:
+            print("Pacientes encontrados:\n")
+            for paciente in encontrados:
+                print(f"Nome: {paciente.nome}, Idade: {paciente.idade}, "
+                      f"Telefone: {paciente.telefone}, CPF: {paciente.cpf}, "
+                      f"RG: {paciente.rg}")
+        else:
+            print("Nenhum paciente encontrado com esse nome.")
+
         self.read_key()
         self.limpar()
 
     def listar(self):
         self.limpar()
-        print("lista")
+
+        if not self.pacientes:
+            print("Nenhum paciente cadastrado!")
+        else:
+            print("Lista de pacientes cadastrados:\n")
+            for i, paciente in enumerate(self.pacientes, start=1):
+                print(
+                    f"{i}. Nome: {paciente.nome}, Idade: {paciente.idade}, "
+                    f"Telefone: {paciente.telefone}, CPF: {paciente.cpf}, RG: {paciente.rg}"
+                )
+
         self.read_key()
         self.limpar()
 
